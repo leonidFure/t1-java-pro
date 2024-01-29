@@ -29,7 +29,8 @@ public class FirstTest {
 		System.out.println("test 1");
 	}
 
-	@Test	void test2() {
+	@Test
+	void test2() {
 		System.out.println("test 2");
 	}
 
@@ -39,10 +40,17 @@ public class FirstTest {
 	}
 
 	@Test
-	@CsvSource(params = "1, true, hello")
+	@CsvSource(params = "1, true, hello world")
 	void megaTest(int a, boolean b, String c) {
 		System.out.println("a = " + a);
 		System.out.println("b = " + b);
 		System.out.println("c = " + c);
+	}
+
+	@Test
+	@CsvSource(params = "1.2, с")
+	void megaTest2(double a, char b) {
+		System.out.println("a = " + a);
+		System.out.println("b = " + b);
 	}
 }

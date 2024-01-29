@@ -1,6 +1,8 @@
 package org.example.utils;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.*;
+import java.util.List;
 import java.util.Optional;
 
 public final class ReflectionUtils {
@@ -21,6 +23,25 @@ public final class ReflectionUtils {
 				.map(Executable::accessFlags)
 				.map(it -> it.contains(accessFlag))
 				.orElse(false);
+	}
+
+	public static boolean isAnnotationPresent(List<Method> methods, Class<? extends Annotation> annotation) {
+		if (methods == null || methods.isEmpty()) {
+			return false;
+		}
+		return methods.stream()
+				.filter(method -> method.isAnnotationPresent(annotation))
+				.count() > 1L;
+	}
+
+	public static boolean isAnnotatedMethodNotUnique(List<Method> methods,
+													 Class<? extends Annotation> annotation) {
+		if (methods == null || methods.isEmpty()) {
+			return false;
+		}
+		return methods.stream()
+				.filter(method -> method.isAnnotationPresent(annotation))
+				.count() > 1L;
 	}
 
 	public static Optional<Constructor<?>> findConstructor(Class<?> tClass, Class<?>... parameterTypes) {
@@ -68,6 +89,10 @@ public final class ReflectionUtils {
 			return Double.class;
 		} else if (primitiveType == float.class) {
 			return Float.class;
+		} else if (primitiveType == long.class) {
+			return Long.class;
+		} else if (primitiveType == char.class) {
+			return Character.class;
 		} else {
 			return primitiveType;
 		}

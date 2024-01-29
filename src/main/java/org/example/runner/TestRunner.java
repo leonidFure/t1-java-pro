@@ -9,6 +9,7 @@ import java.lang.reflect.AccessFlag;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import static org.example.utils.ReflectionUtils.*;
@@ -18,8 +19,11 @@ public final class TestRunner {
 	private TestRunner() {
 	}
 
-	public static <T> void runTest(Class<T> tClass) {
-		final var methods = Arrays.asList(tClass.getDeclaredMethods());
+	public static void runTest(Class<?> tClass) {
+		final var methods = Arrays.asList(Objects.requireNonNull(tClass).getDeclaredMethods());
+		if (!isAnnotationPresent(methods, Test.class)) {
+			return;
+		}
 		validateBeforeTests(methods);
 		final var testedObject = findConstructor(tClass)
 				.map(ReflectionUtils::newInstanceSafely)
@@ -63,7 +67,9 @@ public final class TestRunner {
 		if (annotation == null) {
 			return new Object[0];
 		}
-		final var strValues = annotation.params().split(",");
+		final var strValues = Arrays.stream(annotation.params().split(","))
+				.map(String::trim)
+				.toArray(String[]::new);
 		final var parameterTypes = method.getParameterTypes();
 		final var params = new Object[parameterTypes.length];
 		if (strValues.length != parameterTypes.length) {
@@ -75,12 +81,21 @@ public final class TestRunner {
 				throw new IllegalArgumentException("parameter type not found");
 			}
 			final var strValue = strValues[i];
-			final var parameterType = parameterTypes[i];
-			params[i] = findConstructor(parameterType, String.class)
-					.map(constructor -> newInstanceSafely(constructor, strValue))
+			params[i] = Optional.of(parameterTypes[i])
+					.flatMap(it -> getParamInstance(it, strValue))
 					.orElseThrow(() -> new IllegalArgumentException("incorrect argument"));
 		}
 		return params;
+	}
+
+	private static Optional<?> getParamInstance(Class<?> it, String strValue) {
+		// у Character нет конструктора new Character(String str)
+		// из-за чего для него необходимо реализовать уникальную логику
+		if (it == Character.class) {
+			return Optional.of(strValue.charAt(0));
+		}
+		return findConstructor(it, String.class)
+				.map(constructor -> newInstanceSafely(constructor, strValue));
 	}
 
 	private static Optional<Executor> getStaticMethodExecutorByAnnotation(List<Method> methods,
@@ -94,24 +109,17 @@ public final class TestRunner {
 	}
 
 	private static void validateBeforeTests(List<Method> methods) {
-		if (isAnnotatedMethodNotUniquePerClass(methods, BeforeSuite.class)) {
+		if (isAnnotatedMethodNotUnique(methods, BeforeSuite.class)) {
 			throw new IllegalStateException("methods annotated by @BeforeSuite more then 1 in class");
 		}
-		if (isAnnotatedMethodNotUniquePerClass(methods, AfterSuite.class)) {
+		if (isAnnotatedMethodNotUnique(methods, AfterSuite.class)) {
 			throw new IllegalStateException("methods annotated by @AfterSuite more then 1 in class");
 		}
-		if (isAnnotatedMethodNotUniquePerClass(methods, BeforeTest.class)) {
+		if (isAnnotatedMethodNotUnique(methods, BeforeTest.class)) {
 			throw new IllegalStateException("methods annotated by @BeforeTest more then 1 in class");
 		}
-		if (isAnnotatedMethodNotUniquePerClass(methods, AfterTest.class)) {
+		if (isAnnotatedMethodNotUnique(methods, AfterTest.class)) {
 			throw new IllegalStateException("methods annotated by @AfterTest more then 1 in class");
 		}
-	}
-
-	private static boolean isAnnotatedMethodNotUniquePerClass(List<Method> methods,
-															  Class<? extends Annotation> annotation) {
-		return methods.stream()
-				.filter(it -> it.isAnnotationPresent(annotation))
-				.count() > 1L;
 	}
 }
