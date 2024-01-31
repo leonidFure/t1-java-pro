@@ -9,14 +9,14 @@ import java.util.stream.Collectors;
 public class Main {
 	public static void main(String[] args) {
 		final var employers = List.of(
-				new Employer("Леонид", 25, "программист"),
-				new Employer("Василий", 25, "инженер"),
-				new Employer("Василий", 22, "инженер"),
-				new Employer("Алиса", 44, "инженер"),
-				new Employer("Кузьма", 46, "программист"),
-				new Employer("Никита", 13, "школьник"),
-				new Employer("Виталий", 30, "инженер"),
-				new Employer("Дмитрий", 27, "инженер")
+				new Employer("Леонид", 25, Employer.Position.PROGRAMMER),
+				new Employer("Василий", 25, Employer.Position.ENGINEER),
+				new Employer("Василий", 22, Employer.Position.ENGINEER),
+				new Employer("Алиса", 44, Employer.Position.ENGINEER),
+				new Employer("Кузьма", 46, Employer.Position.PROGRAMMER),
+				new Employer("Никита", 13, Employer.Position.STUDENT),
+				new Employer("Виталий", 30, Employer.Position.ENGINEER),
+				new Employer("Дмитрий", 27, Employer.Position.ENGINEER)
 		);
 
 		System.out.println(deduplication(List.of(1, 3, 2, 1, 5, 2, 4)));
@@ -41,32 +41,33 @@ public class Main {
 	}
 
 	private static Integer findHighestNumber(List<Integer> list, int num) {
-		return list.size() <= num
-				? null
-				: list.stream()
+		return list.stream()
 				.sorted((a, b) -> Integer.compare(b, a))
-				.toList().get(num);
+				.skip(num)
+				.findFirst()
+				.orElseThrow();
 	}
 
 	private static Integer findHighestUniqueNumber(List<Integer> list, int num) {
-		return list.size() <= num
-				? null
-				: list.stream().distinct()
+		return list.stream().distinct()
 				.sorted((a, b) -> Integer.compare(b, a))
-				.toList().get(num);
+				.skip(num)
+				.findFirst()
+				.orElseThrow();
 	}
 
 	private static List<String> findOldestEmployers(List<Employer> employers) {
 		return employers.stream()
-				.filter(it -> "инженер".equalsIgnoreCase(it.position()))
+				.filter(it -> Employer.Position.ENGINEER == it.position())
 				.sorted((e1, e2) -> Integer.compare(e2.age(), e1.age()))
 				.map(Employer::name)
-				.limit(3).toList();
+				.limit(3)
+				.toList();
 	}
 
 	private static double findAverageAge(List<Employer> employers) {
 		return employers.stream()
-				.filter(it -> "инженер".equalsIgnoreCase(it.position()))
+				.filter(it -> Employer.Position.ENGINEER == it.position())
 				.mapToDouble(it -> (double) it.age()).average()
 				.orElseThrow();
 	}
