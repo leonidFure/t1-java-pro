@@ -78,9 +78,9 @@ public class Main {
 				.orElseThrow();
 	}
 
-	private static Map<String, Integer> findCountsMap(String string) {
+	private static Map<String, Long> findCountsMap(String string) {
 		return Arrays.stream(string.split(" "))
-				.collect(Collectors.toMap(Function.identity(), str -> 1, Integer::sum));
+				.collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
 	}
 
 	private static void printSortedStrings(List<String> strings) {
