@@ -1,4 +1,4 @@
-package org.example.domain.exception;
+package org.example.domain.exceptions;
 
 public class DataBaseException extends RuntimeException {
 	public DataBaseException(String message) {

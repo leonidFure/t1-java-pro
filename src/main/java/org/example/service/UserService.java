@@ -1,15 +1,18 @@
 package org.example.service;
 
-import org.example.domain.User;
+import org.example.dto.BaseResponseDto;
+import org.example.dto.users.UserCreateRequestDto;
+import org.example.dto.users.UserCreateResponseDto;
+import org.example.dto.users.UserResponseDto;
 
 import java.util.Collection;
 
 public interface UserService {
-	Long create(User user);
+	UserResponseDto getById(Long id);
 
-	void delete(Long id);
+	Collection<UserResponseDto> getAll();
 
-	User getById(Long id);
+	UserCreateResponseDto create(UserCreateRequestDto user);
 
-	Collection<User> getAll();
+	BaseResponseDto delete(Long id);
 }
