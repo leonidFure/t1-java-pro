@@ -1,11 +1,11 @@
-package org.example.dao;
+package org.example.infrostructure.service;
 
 import org.example.domain.products.Product;
 
 import java.util.Collection;
 import java.util.Optional;
 
-public interface ProductDao {
+public interface ProductDaoService {
 	Optional<Long> create(Product user);
 
 	void delete(Long id);

@@ -1,7 +1,7 @@
-package org.example.dao.impl;
+package org.example.infrostructure.dao.impl;
 
 import lombok.RequiredArgsConstructor;
-import org.example.dao.ProductDao;
+import org.example.infrostructure.dao.ProductDao;
 import org.example.domain.exceptions.DataBaseException;
 import org.example.domain.products.Product;
 import org.example.domain.products.ProductType;
