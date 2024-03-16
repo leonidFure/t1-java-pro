@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  wiremock-stepup-core:
+    image: rodolpheche/wiremock
+    container_name: wiremock-stepup-core
+    ports:
+      - "8031:8080"
+    volumes:
+      - ./wiremock/stubs/__files/:/home/wiremock/__files/
+      - ./wiremock/stubs/mappings/:/home/wiremock/mappings/
+    command:
+      - -verbose
+      - -global-response-templating
+  postgres:
+    image: 'postgres:latest'
+    environment:
+      - 'POSTGRES_DB=java_pro_db'
+      - 'POSTGRES_USER=lgorev'
+      - 'POSTGRES_PASSWORD=password'
+    ports:
+      - '5432:5432'
+
