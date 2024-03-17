@@ -19,6 +19,7 @@ public class CoinsService {
     private final TransactionsService transactionsService;
     private final ExecuteCoinsRequestProductValidator executeCoinsRequestProductValidator;
 
+
     public ExecuteCoinsResponse execute(ExecuteCoinsRequest request, String userId) {
         if (coreProperties.getNumbersBlockingEnabled()) {
             if (coreProperties.getBlockedNumbers().contains(request.receiverNumber())) {

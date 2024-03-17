@@ -8,7 +8,7 @@ import org.springframework.web.client.ResponseErrorHandler;
 import java.io.IOException;
 
 @Component
-public class RestTemplateResponseErrorHandler implements ResponseErrorHandler {
+public class RestTemplateExecutorResponseErrorHandler implements ResponseErrorHandler {
     @Override
     public boolean hasError(ClientHttpResponse response) throws IOException {
         return response.getStatusCode().is4xxClientError() || response.getStatusCode().is5xxServerError();

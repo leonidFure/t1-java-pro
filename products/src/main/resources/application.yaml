@@ -1,3 +1,4 @@
+
 datasource:
   servername: localhost
   port: 5432
@@ -5,3 +6,5 @@ datasource:
     name: java_pro_db
     username: lgorev
     password: password
+server:
+  port: 8032

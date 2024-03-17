@@ -17,4 +17,9 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorDto> handleBadRequestException(BadRequestException e) {
         return new ResponseEntity<>(new ErrorDto(e.getCode(), e.getMessage()), HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(ValidationException.class)
+    public ResponseEntity<ErrorDto> handleValidationException(ValidationException e) {
+        return new ResponseEntity<>(new ErrorDto(e.getErrorCode(), e.getMessage()), HttpStatus.OK);
+    }
 }
