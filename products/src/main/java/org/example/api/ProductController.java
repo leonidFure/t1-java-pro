@@ -22,7 +22,7 @@ public class ProductController {
 	private final ProductService productService;
 
 	@GetMapping
-	public ResponseEntity<Collection<ProductResponseDto>> getProducts(@RequestParam Long userId) {
+	public ResponseEntity<Collection<ProductResponseDto>> getProducts(@RequestHeader Long userId) {
 		return ok(productService.getProducts(userId));
 	}
 
