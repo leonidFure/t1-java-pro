@@ -5,6 +5,7 @@ import org.example.domain.products.Product;
 import org.example.dto.Status;
 import org.example.dto.products.CreateProductRequestDto;
 import org.example.dto.products.ProductResponseDto;
+import org.example.infrostructure.entities.ProductEntity;
 import org.example.service.mappers.ProductMapper;
 import org.springframework.stereotype.Service;
 
@@ -32,6 +33,26 @@ public class ProductMapperImpl implements ProductMapper {
 				.productNumber(dto.getProductNumber())
 				.balance(dto.getBalance())
 				.type(dto.getType())
+				.build();
+	}
+
+	@Override
+	public ProductEntity toEntity(Product product) {
+		return ProductEntity.builder()
+				.userId(product.getUserId())
+				.productNumber(product.getProductNumber())
+				.balance(product.getBalance())
+				.type(product.getType())
+				.build();
+	}
+
+	@Override
+	public Product toDomain(ProductEntity entity) {
+		return Product.builder()
+				.userId(entity.getUserId())
+				.productNumber(entity.getProductNumber())
+				.balance(entity.getBalance())
+				.type(entity.getType())
 				.build();
 	}
 }

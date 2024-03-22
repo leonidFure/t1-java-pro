@@ -5,7 +5,7 @@ import org.example.domain.products.Product;
 import java.util.Collection;
 import java.util.Optional;
 
-public interface ProductDaoService {
+public interface ProductRepositoryService {
 	Optional<Long> create(Product user);
 
 	void delete(Long id);
