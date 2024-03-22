@@ -4,10 +4,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.stepup.spring.coins.core.api.ExecuteCoinsRequest;
 import ru.stepup.spring.coins.core.api.ExecuteCoinsResponse;
+import ru.stepup.spring.coins.core.configurations.properties.CoreProperties;
 import ru.stepup.spring.coins.core.entities.Transaction;
 import ru.stepup.spring.coins.core.exceptions.BadRequestException;
-import ru.stepup.spring.coins.core.configurations.properties.CoreProperties;
+import ru.stepup.spring.coins.core.exceptions.ValidationException;
 import ru.stepup.spring.coins.core.validators.ExecuteCoinsRequestProductValidator;
+import ru.stepup.spring.coins.core.validators.ProductValidator;
 
 import java.util.UUID;
 
@@ -17,7 +19,9 @@ public class CoinsService {
     private final CoreProperties coreProperties;
     private final ExecutorService executorService;
     private final TransactionsService transactionsService;
+    private final ProductsService productsService;
     private final ExecuteCoinsRequestProductValidator executeCoinsRequestProductValidator;
+    private final ProductValidator productValidator;
 
 
     public ExecuteCoinsResponse execute(ExecuteCoinsRequest request, String userId) {
@@ -26,7 +30,13 @@ public class CoinsService {
                 throw new BadRequestException("Указан заблокированный номер кошелька", "BLOCKED_ACCOUNT_NUMBER");
             }
         }
+
         executeCoinsRequestProductValidator.validate(request);
+
+        final var product = productsService.getProductById(request.productId())
+                .orElseThrow(() -> new ValidationException("PRODUCT_NOT_FOUND", "Продукт не найден"));
+        productValidator.validate(product);
+
         Transaction transaction = new Transaction(
                 UUID.randomUUID().toString(),
                 userId,

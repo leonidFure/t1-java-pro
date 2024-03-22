@@ -1,34 +1,38 @@
 package ru.stepup.spring.coins.core.integrations.impl;
 
-import org.springframework.core.ParameterizedTypeReference;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
-import ru.stepup.spring.coins.core.integrations.BaseIntegrationService;
 import ru.stepup.spring.coins.core.integrations.ProductsIntegration;
 import ru.stepup.spring.coins.core.integrations.dtos.ProductResponseDto;
+import ru.stepup.spring.coins.core.integrations.executor.HttpRequestExecutor;
+import ru.stepup.spring.coins.core.utils.HttpRequest;
 
 import java.util.List;
 import java.util.Optional;
 
 @Component
-public class ProductsIntegrationImpl extends BaseIntegrationService implements ProductsIntegration {
-	public ProductsIntegrationImpl(RestTemplate productRestTemplate) {
-		super(productRestTemplate);
-	}
+@RequiredArgsConstructor
+public class ProductsIntegrationImpl implements ProductsIntegration {
+	private final HttpRequestExecutor productRequestExecutor;
 
 	@Override
 	public Optional<ProductResponseDto> getProductById(Long productId) {
-		return executeGet("/api/v1/products/" + productId, new ParameterizedTypeReference<>() {
-		});
+		return productRequestExecutor.execute(HttpRequest.builder()
+				.url("/api/v1/products/" + productId)
+				.method(HttpMethod.GET)
+				.build());
 	}
 
 	@Override
 	public List<ProductResponseDto> getProductsByUserId(Long userId) {
-		final var url = UriComponentsBuilder.fromHttpUrl("/api/v1/products/")
-				.queryParam("userId", userId)
-				.toUriString();
-		return executeGet(url, new ParameterizedTypeReference<List<ProductResponseDto>>() {
-		}).orElseThrow();
+		return productRequestExecutor.<List<ProductResponseDto>>execute(HttpRequest.builder()
+						.url(UriComponentsBuilder.fromHttpUrl("/api/v1/products/")
+								.queryParam("userId", userId)
+								.toUriString())
+						.method(HttpMethod.GET)
+						.build())
+				.orElseThrow();
 	}
 }
