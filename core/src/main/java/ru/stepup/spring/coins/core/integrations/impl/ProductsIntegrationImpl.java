@@ -23,9 +23,7 @@ public class ProductsIntegrationImpl implements ProductsIntegration {
 	@Override
 	public Optional<ProductResponseDto> getProductById(Long productId) {
 		return productRequestExecutor.execute(HttpRequest.builder()
-				.url(UriComponentsBuilder.fromHttpUrl("/api/v1/products")
-						.queryParam("id", productId)
-						.toUriString())
+				.url("/api/v1/products/" + productId)
 				.method(HttpMethod.GET)
 				.build());
 	}
@@ -33,7 +31,7 @@ public class ProductsIntegrationImpl implements ProductsIntegration {
 	@Override
 	public List<ProductResponseDto> getProductsByUserId(Long userId) {
 		return productRequestExecutor.<List<ProductResponseDto>>execute(HttpRequest.builder()
-						.url("/api/v1/products/")
+						.url("/api/v1/products")
 						.method(HttpMethod.GET)
 						.headers(Map.of(USERID, userId))
 						.build())
