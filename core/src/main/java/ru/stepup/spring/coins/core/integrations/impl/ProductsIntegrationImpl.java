@@ -10,7 +10,10 @@ import ru.stepup.spring.coins.core.integrations.executor.HttpRequestExecutor;
 import ru.stepup.spring.coins.core.utils.HttpRequest;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+
+import static ru.stepup.spring.coins.core.utils.HttpRequestConstants.USERID;
 
 @Component
 @RequiredArgsConstructor
@@ -28,10 +31,9 @@ public class ProductsIntegrationImpl implements ProductsIntegration {
 	@Override
 	public List<ProductResponseDto> getProductsByUserId(Long userId) {
 		return productRequestExecutor.<List<ProductResponseDto>>execute(HttpRequest.builder()
-						.url(UriComponentsBuilder.fromHttpUrl("/api/v1/products/")
-								.queryParam("userId", userId)
-								.toUriString())
+						.url("/api/v1/products/")
 						.method(HttpMethod.GET)
+						.headers(Map.of(USERID, userId))
 						.build())
 				.orElseThrow();
 	}

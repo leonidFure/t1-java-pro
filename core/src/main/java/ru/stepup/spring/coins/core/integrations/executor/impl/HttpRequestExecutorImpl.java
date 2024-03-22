@@ -12,6 +12,7 @@ import ru.stepup.spring.coins.core.integrations.executor.HttpRequestExecutor;
 import ru.stepup.spring.coins.core.utils.HttpRequest;
 
 import java.util.Collections;
+import java.util.Objects;
 import java.util.Optional;
 
 @Slf4j
@@ -23,6 +24,10 @@ public class HttpRequestExecutorImpl implements HttpRequestExecutor {
 	public <R> Optional<R> execute(HttpRequest request) {
 		final var httpHeaders = new HttpHeaders();
 		httpHeaders.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+		if (request.getHeaders() != null) {
+			request.getHeaders()
+					.forEach((k,v) -> httpHeaders.addIfAbsent(k, Objects.toString(v)));
+		}
 		final var httpEntity = new HttpEntity<>(request.getBody(), httpHeaders);
 		try {
 			log.debug("request: {} {}", request.getMethod(), request.getUrl());
