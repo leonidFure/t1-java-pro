@@ -1,0 +1,19 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/java_pro_db?currentSchema=jp_limit
+    username: lgorev
+    password: password
+logging:
+  level:
+    ru.lgore.limits.*: debug
+app:
+  limit:
+    default-value: 10000
+  schedulers:
+    limit:
+      cron: 0 0 * * * ?
+      batch-size: 100
+  operation:
+    max-attempts: 10
+    delay: 100
+

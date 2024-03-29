@@ -1,0 +1,14 @@
+{
+  "properties": [
+    {
+      "name": "app.operation.max-attempts",
+      "type": "java.lang.Integer",
+      "description": "Description for app.operation.max-attempts."
+    },
+    {
+      "name": "app.operation.delay",
+      "type": "java.lang.Integer",
+      "description": "Description for app.operation.delay."
+    }
+  ]
+}

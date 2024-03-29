@@ -1,8 +1,8 @@
-package ru.stepup.spring.coins.core.utils;
+package ru.lgorev.consts;
 
 import lombok.experimental.UtilityClass;
 
 @UtilityClass
-public class HttpRequestConstants {
+public class HttpConstants {
 	public final String USERID = "USERID";
 }
